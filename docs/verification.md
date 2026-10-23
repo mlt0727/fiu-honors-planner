@@ -2,6 +2,8 @@
 
 ## Executed checks
 
+- OTP follow-up: the actual Neon email uses a six-digit code, so the form now provides verification, manual resumption and explicit resend instead of link-only instructions. Local Chrome checks with intercepted auth responses verified signup → OTP form, resend, verification → password-login fallback and manual resumption with the email retained. Those checks did not use the owner's code or deliver email. Real local API checks confirmed that non-owner verification and delivery requests return 403; the auth smoke check failed before this guard and passed after it. Actual owner verification remains a user action.
+
 - Registration incident, October 23: anonymous auth GETs passed but auth POSTs returned `403 INVALID_ORIGIN`. Added the exact production origin to the main branch's Neon Auth trusted domains and enabled Verify at Sign-up to match the server's verified-email requirement. `scripts/check-auth.mjs` reproduced the failure before the change and passed afterward: invalid sign-in 401, too-short owner signup 400, non-owner signup 403. It creates no account and sends no email. The client now displays SDK authentication errors instead of disguising them as network outages; local browser reproduction displayed the actual `Invalid origin` message.
 
 - All 128 directory options imported, with 128 Chinese summaries and four category counts 33 / 41 / 36 / 18. Original source descriptions are retained.

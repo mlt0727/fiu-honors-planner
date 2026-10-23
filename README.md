@@ -22,6 +22,8 @@ Environment variables: `DATABASE_URL`, `NEON_AUTH_BASE_URL`, `NEON_AUTH_COOKIE_S
 
 In the production branch's Neon Auth settings, add `https://fiu-honors-planner.vercel.app` to trusted domains (include the scheme, without a trailing slash) and enable **Verify at Sign-up**. The server requires a verified owner email. Anonymous session reads do not validate these settings; test POST requests before handing off registration. The SDK throws authentication errors, which the form displays separately from network failures.
 
+Neon's configured verification email contains a six-digit OTP. After registration the form switches to code entry. Existing unverified accounts can choose **已有验证码？验证邮箱** in Settings, enter their email and code, then sign in if Neon does not create a session automatically. **重新发送验证码** explicitly requests a new verification email; opening the form never sends one. Codes and passwords stay in component memory and are not logged, exported or stored in the planner database. OTP verification and resend proxy routes only accept the owner email.
+
 ## Verify
 
 ```sh

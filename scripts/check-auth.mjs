@@ -17,4 +17,8 @@ assert.equal(signup.status,400,`Sign-up must reach password validation: ${JSON.s
 assert.equal(signup.data.code,'PASSWORD_TOO_SHORT');
 const foreign=await request('sign-up/email',{email:'qa-login@example.invalid',password:'short',name:'Auth validation check'});
 assert.equal(foreign.status,403,'Non-owner registration must stay blocked.');
+const foreignVerification=await request('email-otp/verify-email',{email:'qa-otp@example.invalid',otp:'000000'});
+assert.equal(foreignVerification.status,403,'Non-owner email verification must be blocked.');
+const foreignResend=await request('email-otp/send-verification-otp',{email:'qa-otp@example.invalid',type:'email-verification'});
+assert.equal(foreignResend.status,403,'Non-owner OTP delivery must be blocked before contacting Neon.');
 console.log('Auth smoke check passed: production origin, login, signup validation, owner restriction. No user created or email sent.');
