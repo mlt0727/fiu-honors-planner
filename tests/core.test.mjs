@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {progress, recommend, dueReminder, localDay, validateRecord, normalizeTitle,sameOrigin} from '../lib/core.mjs';
+import {progress, recommend, dueReminder, localDay, validateRecord, normalizeTitle,sameOrigin,eligible,quickPlanStatus,validateBackup,newYorkTimestamp} from '../lib/core.mjs';
 
 const items=[{id:'a',category:0,canonical:'advisor'},{id:'b',category:0,canonical:'research'},{id:'c',category:0,canonical:'advisor'},{id:'d',category:1,canonical:'career'}];
 const record=(itemId,eventKey,status='attended')=>({itemId,eventKey,status,category:items.find(i=>i.id===itemId).category});
@@ -40,4 +40,38 @@ test('origin validation uses the external host, including a development port',()
   assert.equal(sameOrigin(new Headers({origin:'https://planner.vercel.app',host:'planner.vercel.app'})),true);
   assert.equal(sameOrigin(new Headers({origin:'https://evil.example',host:'planner.vercel.app'})),false);
   assert.equal(sameOrigin(new Headers({host:'planner.vercel.app'})),false);
+});
+test('canonical item completion and item dismissal suppress linked events across aliases',()=>{
+  const catalog=[{id:'a',canonical:'lecture',category:0},{id:'alias',canonical:'lecture',category:0}];
+  const event={id:'e',itemIds:['alias'],category:0,start:'2026-10-29T17:00:00-04:00'};
+  const now=new Date('2026-10-23T20:00:00Z');
+  assert.equal(eligible(event,catalog,[{itemId:'a',eventKey:'item:lecture',status:'dismissed'}],now),false);
+  assert.equal(eligible(catalog[1],catalog,[{itemId:'a',eventKey:'event:another',status:'attended'}],now),false);
+  assert.equal(eligible(event,catalog,[{itemId:'a',eventKey:'event:another',status:'dismissed'}],now),true);
+  assert.equal(eligible({...event,start:'2026-09-01T10:00:00-04:00'},catalog,[],now),false);
+});
+test('quick plan toggle preserves completed and dismissed records',()=>{
+  assert.equal(quickPlanStatus('none'),'planned');assert.equal(quickPlanStatus('planned'),'none');
+  for(const status of ['attended','accepted','dismissed'])assert.equal(quickPlanStatus(status),status);
+});
+test('record attribution must match canonical item key or a real allowed event',()=>{
+  const catalog=[{id:'a',category:0,canonical:'lecture'},{id:'b',category:1,canonical:'career'}];
+  const events=[{id:'e',itemIds:['a']}];
+  assert.throws(()=>validateRecord({itemId:'b',eventKey:'event:e',status:'attended'},catalog,events));
+  assert.throws(()=>validateRecord({itemId:'a',eventKey:'item:career',status:'attended'},catalog,events));
+  assert.throws(()=>validateRecord({itemId:'a',date:'2026-02-30',status:'attended'},catalog,events));
+  assert.equal(validateRecord({itemId:'a',eventKey:'event:e',status:'attended'},catalog,events).eventKey,'event:e');
+});
+test('backup restore rejects malformed or duplicate records and uses current revision',()=>{
+  const catalog=[{id:'a',category:0,canonical:'lecture'}];
+  const r={itemId:'a',eventKey:'item:lecture',status:'accepted',revision:999};
+  assert.throws(()=>validateBackup({version:2,records:[]},catalog,[],[]));
+  assert.throws(()=>validateBackup({version:1,records:[r,r]},catalog,[],[]));
+  assert.equal(validateBackup({version:1,records:[r]},catalog,[],[{eventKey:'item:lecture',revision:3}])[0].expectedRevision,3);
+});
+test('manually entered deadlines use New York wall time across daylight saving',()=>{
+  assert.equal(newYorkTimestamp('2026-10-29T17:00'),'2026-10-29T21:00:00.000Z');
+  assert.equal(newYorkTimestamp('2026-11-03T10:00'),'2026-11-03T15:00:00.000Z');
+  assert.throws(()=>newYorkTimestamp('2027-03-14T02:30'));
+  assert.throws(()=>validateRecord({itemId:'a',status:'planned',deadline:'not-a-date'},items));
 });

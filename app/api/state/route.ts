@@ -1,6 +1,7 @@
 import {NextRequest,NextResponse} from 'next/server';
 import {ownerSession} from '@/lib/auth';
-import {loadState,sql,defaults} from '@/lib/db';
+import {loadState,loadEvents,sql,defaults} from '@/lib/db';
+import {upsertRecord} from '@/lib/store.mjs';
 import items from '@/data/items.json';
 import {validateRecord,sameOrigin} from '@/lib/core.mjs';
 
@@ -22,11 +23,10 @@ export async function POST(req:NextRequest){
     if(Number(req.headers.get('content-length'))>15000)return NextResponse.json({error:'请求过大'},{status:413});
     const body=await req.json();
     if(body.type==='record'){
-      const r=validateRecord(body.record,items);
-      const saved=await sql()`insert into honors_planner.records(user_id,event_key,item_id,category,status,note,completed_date) values(${user.id},${r.eventKey},${r.itemId},${r.category},${r.status},${r.note},${r.date}) on conflict(user_id,event_key) do update set item_id=excluded.item_id,category=excluded.category,status=excluded.status,note=excluded.note,completed_date=excluded.completed_date,revision=honors_planner.records.revision+1,updated_at=now() where honors_planner.records.revision=${r.expectedRevision} returning revision`;
-      if(!saved.length)return NextResponse.json({error:'另一台设备已经修改这条记录。请刷新后重试。'},{status:409});
-      await sql()`insert into honors_planner.preferences(user_id,data) values(${user.id},${JSON.stringify({...defaults,email:user.email})}) on conflict(user_id) do nothing`;
-      return NextResponse.json({revision:saved[0].revision});
+      const r=validateRecord(body.record,items,body.record?.eventKey?.startsWith('event:')?await loadEvents():[]);
+      const saved=await upsertRecord(sql(),user,r,defaults);
+      if(!saved)return NextResponse.json({error:'另一台设备已经修改这条记录。请刷新后重试。'},{status:409});
+      return NextResponse.json(saved);
     }
     if(body.type==='preferences'){
       const p=body.preferences;

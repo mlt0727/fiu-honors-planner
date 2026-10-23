@@ -4,6 +4,7 @@ const existing=await sql`select table_name from information_schema.tables where 
 console.log('Existing planner tables:',existing.map(r=>r.table_name));
 await sql`create schema if not exists honors_planner`;
 await sql`create table if not exists honors_planner.records(user_id text not null,event_key text not null,item_id text not null,category integer not null check(category between 0 and 3),status text not null check(status in ('none','planned','attended','accepted','dismissed')),note text not null default '' check(length(note)<=2000),completed_date text not null default '',revision integer not null default 1,updated_at timestamptz not null default now(),primary key(user_id,event_key))`;
+await sql`alter table honors_planner.records add column if not exists deadline text not null default ''`;
 await sql`create table if not exists honors_planner.preferences(user_id text primary key,data jsonb not null,revision integer not null default 1)`;
 await sql`create table if not exists honors_planner.events(id text primary key,data jsonb not null)`;
 await sql`create table if not exists honors_planner.drafts(user_id text not null,key text not null,data jsonb not null,created_at timestamptz not null default now(),primary key(user_id,key))`;

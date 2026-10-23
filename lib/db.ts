@@ -7,12 +7,12 @@ export const defaults:Preferences={hours:0,weekly:true,deadlineReminders:true,ev
 export async function loadEvents():Promise<Event[]>{
   const cached=await sql()`select data from honors_planner.events`;
   const map=new Map(seed.map(e=>[e.id,e as Event]));
-  for(const row of cached)map.set(row.data.id,row.data);
+  for(const row of cached)map.set(row.data.id,{...row.data,title:seed.find(e=>e.id===row.data.id)?.title||row.data.title});
   return [...map.values()];
 }
 export async function loadState(userId:string){
   const [records,prefs,drafts]=await Promise.all([
-    sql()`select item_id as "itemId",event_key as "eventKey",category,status,note,completed_date as date,revision from honors_planner.records where user_id=${userId}`,
+    sql()`select item_id as "itemId",event_key as "eventKey",category,status,note,completed_date as date,revision,deadline from honors_planner.records where user_id=${userId}`,
     sql()`select data,revision from honors_planner.preferences where user_id=${userId}`,
     sql()`select data from honors_planner.drafts where user_id=${userId} order by created_at desc limit 30`
   ]);
