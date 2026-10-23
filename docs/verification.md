@@ -2,6 +2,8 @@
 
 ## Executed checks
 
+- Registration incident, October 23: anonymous auth GETs passed but auth POSTs returned `403 INVALID_ORIGIN`. Added the exact production origin to the main branch's Neon Auth trusted domains and enabled Verify at Sign-up to match the server's verified-email requirement. `scripts/check-auth.mjs` reproduced the failure before the change and passed afterward: invalid sign-in 401, too-short owner signup 400, non-owner signup 403. It creates no account and sends no email. The client now displays SDK authentication errors instead of disguising them as network outages; local browser reproduction displayed the actual `Invalid origin` message.
+
 - All 128 directory options imported, with 128 Chinese summaries and four category counts 33 / 41 / 36 / 18. Original source descriptions are retained.
 - Seventeen Node tests pass: caps and duplicate credit, aliases/dismissals, protected quick toggles, event attribution, backup validation, malformed dates, New York DST, five-day reminder selection, unknown deadlines, RSS trust boundaries, unverified credit exclusion and selection of the remaining eligible option for cross-category events.
 - TypeScript and production Next.js build pass.

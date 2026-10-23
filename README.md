@@ -20,6 +20,8 @@ npm run dev
 
 Environment variables: `DATABASE_URL`, `NEON_AUTH_BASE_URL`, `NEON_AUTH_COOKIE_SECRET`, `OWNER_EMAIL`, `CRON_SECRET`. Provision Neon on Vercel's free plan with built-in auth. Keep all credentials in ignored `.env.local` and Vercel encrypted environment variables. Use a verified email matching `OWNER_EMAIL`; public sign-up for other accounts is rejected. The owner creates a dedicated website password through the login/settings form.
 
+In the production branch's Neon Auth settings, add `https://fiu-honors-planner.vercel.app` to trusted domains (include the scheme, without a trailing slash) and enable **Verify at Sign-up**. The server requires a verified owner email. Anonymous session reads do not validate these settings; test POST requests before handing off registration. The SDK throws authentication errors, which the form displays separately from network failures.
+
 ## Verify
 
 ```sh
@@ -27,9 +29,12 @@ npm test
 npm run typecheck
 npm run build
 node --env-file=.env.local scripts/check-db.mjs
+node --env-file=.env.local scripts/check-auth.mjs
 ```
 
 The database integration check creates scoped disposable QA records and removes them in `finally`. It uses the production save function through two independent Neon connections, checks conflicts and preferences initialization, and never sends email.
+
+The auth smoke check uses invalid credentials and an intentionally too-short registration password. It validates the production origin, both auth POST routes and the owner restriction without creating an account or sending email. Pass another deployment URL as its first argument when needed.
 
 ## Sources and updates
 
