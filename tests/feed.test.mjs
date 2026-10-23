@@ -24,3 +24,9 @@ test('email excludes completed categories and labels start reminders independent
   const draft=makeDraft(events,items,records,{email:'owner@example.com',eventFallback:true},new Date('2026-10-24T14:00:00Z'),'deadline');
   assert.deepEqual(draft.eventIds,['43']);assert.match(draft.body,/这不是报名截止提醒/);assert.match(draft.body,/官方未公布/);
 });
+test('a cross-category event recommends its remaining eligible credit option',()=>{
+  const items=[{id:'a',category:0,canonical:'lecture'},{id:'b',category:1,canonical:'career'}];
+  const event={id:'e',title:'UK info',itemIds:['a','b'],category:0,start:'2026-10-29T17:00:00-04:00',location:'DM'};
+  const draft=makeDraft([event],items,[{itemId:'a',eventKey:'item:lecture',status:'attended'}],{email:'owner@example.com'},new Date('2026-10-23T20:00:00Z'));
+  assert.match(draft.body,/分类：职业发展/);assert.doesNotMatch(draft.body,/分类：学术与研究/);
+});

@@ -17,8 +17,8 @@ Duplicate source rows/events count once; canceled/expired items stay out of reco
 
 ## Tasks
 
-- [ ] Data and logic: normalize source data, add Chinese descriptions, verified dates and source links. Write Node assertions first for category caps, event deduplication, date/deadline selection, timezone/DST and input validation; run red then green.
-- [ ] Persistence and auth: use provisioned Neon Auth, owner-only server checks, parameterized SQL, item-level upserts and optimistic revision conflicts. Verify anonymous rejection and independent-session persistence.
-- [ ] Interface: build shell, list/search/filters, week view, details with plans/attendance/official status, progress, volunteer hours, settings and safe JSON import/export. Verify desktop/mobile interactions against design.png.
-- [ ] Refresh and draft preparation: read official public feeds with timeouts; prepare weekly and five-day reminders with unique keys; show failure/staleness; provide full reviewable email preview and .eml download. Never send.
-- [ ] Delivery: test, typecheck, build, independent review and browser QA; commit and push private repository; deploy and verify Vercel production URL. Keep only useful source and documentation in Git.
+- [x] Data and logic: normalize source data, add Chinese descriptions, verified dates and source links. Write Node assertions first for category caps, event deduplication, date/deadline selection, timezone/DST and input validation; run red then green.
+- [x] Persistence and auth: use provisioned Neon Auth, owner-only server checks, parameterized SQL, item-level upserts and optimistic revision conflicts. Verify anonymous rejection and independent-session persistence.
+- [x] Interface: build shell, list/search/filters, week view, details with plans/attendance/official status, progress, volunteer hours, settings and safe JSON import/export. Verify desktop/mobile interactions against design.png.
+- [x] Refresh and draft preparation: read official public feeds with timeouts; prepare weekly and five-day reminders with unique keys; show failure/staleness; provide full reviewable email preview and .eml download. Never send.
+- [x] Delivery: test, typecheck, build, independent review and browser QA; commit and push private repository; deploy and verify Vercel production URL. Keep only useful source and documentation in Git.

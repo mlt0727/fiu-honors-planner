@@ -3,11 +3,12 @@
 ## Executed checks
 
 - All 128 directory options imported, with 128 Chinese summaries and four category counts 33 / 41 / 36 / 18. Original source descriptions are retained.
-- Sixteen Node tests pass: caps and duplicate credit, aliases/dismissals, protected quick toggles, event attribution, backup validation, malformed dates, New York DST, five-day reminder selection, unknown deadlines, RSS trust boundaries and unverified credit exclusion.
+- Seventeen Node tests pass: caps and duplicate credit, aliases/dismissals, protected quick toggles, event attribution, backup validation, malformed dates, New York DST, five-day reminder selection, unknown deadlines, RSS trust boundaries, unverified credit exclusion and selection of the remaining eligible option for cross-category events.
 - TypeScript and production Next.js build pass.
 - Real Neon integration check uses two independent connections: durable saved data, initial preferences revision, stale-write conflict, preference preservation and owner scoping. Its temporary QA rows are removed.
 - Anonymous GET state returns no private records; anonymous write is 401, cross-origin write is 403, unauthenticated cron is 401.
 - Authorized local cron returns 200, updates four known events from the official public feed, and reports zero emails sent.
+- The same production checks pass on https://fiu-honors-planner.vercel.app: anonymous state has no private records, writes reject with 401/403, cron rejects unauthorized calls, and an authorized production refresh updates four events with emailsSent=0. Runtime error/fatal log inspection found no matching errors at handoff.
 - Browser extension interaction checks: all 128 options, Advisor search returning four matching options, details, the next week containing three verified events, full weekly draft and mobile layout with no horizontal overflow.
 - Chrome extension screenshot resizing was unreliable, so final visual comparison uses independent headless Chrome through the installed agent-browser CLI. Temporary QA session is closed after use.
 

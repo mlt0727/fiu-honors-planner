@@ -2,6 +2,10 @@
 
 Personal 2026–2027 Honors engagement planner. Chinese summaries, official English titles and source links, list/week views, four categories requiring two items each, separate attendance/official recognition, volunteer-hour tracking and Neon cloud sync.
 
+Live site: https://fiu-honors-planner.vercel.app/
+
+Private source: https://github.com/mlt0727/fiu-honors-planner
+
 ## Run
 
 Node 24 is used in production.
@@ -36,6 +40,8 @@ The database integration check creates scoped disposable QA records and removes 
 Daily Vercel Cron at 13:00 UTC refreshes the official public RSS feed. It updates known event times and locations; exact title matches without confirmed path attribution are marked unverified and excluded from recommendations. The public feed covers its own rolling window and cannot refresh the authenticated pathway catalog. A missing event in the feed is not treated as canceled; public-source failures retain the last verified snapshot and record a failure. Activity information should be rechecked on the linked official page before attending.
 
 All displayed times use `America/New_York`, including daylight saving. Unknown registration deadlines remain unknown; the seven-business-day accessibility request notice is never interpreted as a registration deadline. The annual official requirement deadline is reproduced as April 9, 2027 23:59 (source says EST). Annual 20 service hours are separate.
+
+After checking an event's official registration page, the owner can enter its deadline in the detail dialog. This private override syncs through Neon, is labeled as owner-entered in drafts, and participates in five-calendar-day reminders. The input uses New York local time even on a device in another timezone.
 
 ## Reminder review mode
 

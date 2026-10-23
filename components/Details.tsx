@@ -1,6 +1,6 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
-import {CATEGORIES,formatTime,localDay,newYorkTimestamp,newYorkWall} from '@/lib/core.mjs';
+import {CATEGORIES,formatTime,localDay,newYorkTimestamp,newYorkWall,recommendedItem} from '@/lib/core.mjs';
 import Icon from './Icon';
 import type {Selection} from './ActivityRow';
 import type {Item,Event,RecordEntry,Status} from '@/lib/types';
@@ -11,7 +11,7 @@ export default function Details({selection,items,events,records,onClose,onSave,o
   const ids=selection.event?.itemIds||[selection.item!.id];
   const eventKey=selection.event?`event:${selection.event.id}`:`item:${selection.item!.canonical}`;
   const existing=records.find(r=>r.eventKey===eventKey);
-  const [itemId,setItemId]=useState(existing?.itemId||ids[0]);
+  const [itemId,setItemId]=useState(existing?.itemId||recommendedItem(selection.event||selection.item,items,records,new Date(),data.category)?.id||ids[0]);
   const [status,setStatus]=useState<Status>(existing?.status||'none');
   const [date,setDate]=useState(existing?.date||localDay(new Date()));
   const [note,setNote]=useState(existing?.note||'');
