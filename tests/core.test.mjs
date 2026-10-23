@@ -1,6 +1,11 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {progress, recommend, dueReminder, localDay, validateRecord, normalizeTitle,sameOrigin,eligible,quickPlanStatus,validateBackup,newYorkTimestamp} from '../lib/core.mjs';
+import {progress, recommend, dueReminder, localDay, validateRecord, normalizeTitle,sameOrigin,eligible,quickPlanStatus,validateBackup,newYorkTimestamp,formatTime} from '../lib/core.mjs';
+
+test('displayed dates include the weekday in New York, including the previous UTC day',()=>{
+  assert.match(formatTime('2026-10-27T19:30:00Z'),/10月27日.*周二.*15:30/);
+  assert.match(formatTime('2026-10-27T00:30:00Z'),/10月26日.*周一.*20:30/);
+});
 
 const items=[{id:'a',category:0,canonical:'advisor'},{id:'b',category:0,canonical:'research'},{id:'c',category:0,canonical:'advisor'},{id:'d',category:1,canonical:'career'}];
 const record=(itemId,eventKey,status='attended')=>({itemId,eventKey,status,category:items.find(i=>i.id===itemId).category});
