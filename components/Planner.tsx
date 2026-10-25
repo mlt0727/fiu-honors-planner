@@ -12,9 +12,9 @@ import {text,categoryNames,summaryFor} from '@/lib/i18n.mjs';
 import {progress,formatTime,localDay,eligible,quickPlanStatus,validateBackup,withPersonalDeadlines,recommendedItem} from '@/lib/core.mjs';
 import type {Item,Event,RecordEntry,PlannerState,Preferences,Language} from '@/lib/types';
 
-const initial:PlannerState={records:[],preferences:{hours:0,weekly:true,deadlineReminders:true,eventFallback:false,email:'',revision:0,language:'zh'},drafts:[],session:null,sync:{lastSuccess:null,lastAttempt:null,error:null}};
+const initial:PlannerState={records:[],preferences:{hours:0,weekly:true,deadlineReminders:true,eventFallback:false,email:'',revision:0,language:'en'},drafts:[],session:null,sync:{lastSuccess:null,lastAttempt:null,error:null}};
 export default function Planner({items,seedEvents}:{items:Item[];seedEvents:Event[]}){
-  const [language,setLanguage]=useState<Language>('zh');
+  const [language,setLanguage]=useState<Language>('en');
   const activeUser=useRef<string|null>(null),refreshId=useRef(0);
   const t=(key:string,values:Record<string,unknown>={})=>text(key,language,values);
   const CATEGORIES=categoryNames(language);
@@ -26,10 +26,10 @@ export default function Planner({items,seedEvents}:{items:Item[];seedEvents:Even
     setLoading(true);
     const [personal,publicEvents]=await Promise.allSettled([fetch('/api/state?language='+hint,{cache:'no-store'}).then(async r=>{const d=await r.json();if(!r.ok)throw Error(d.error);return d;}),fetch('/api/events',{cache:'no-store'}).then(r=>r.json())]);
     if(requestId!==refreshId.current)return;
-    if(personal.status==='fulfilled'){activeUser.current=personal.value.session?.email||null;if(personal.value.session)setLanguage(personal.value.preferences.language==='en'?'en':'zh');setState({...initial,...personal.value});setHours(String(personal.value.preferences.hours));}else setNotice(personal.reason?.message||t("个人数据读取失败，请重试。"));
+    if(personal.status==='fulfilled'){activeUser.current=personal.value.session?.email||null;setLanguage(personal.value.session?(personal.value.preferences.language==='en'?'en':'zh'):'en');setState({...initial,...personal.value});setHours(String(personal.value.preferences.hours));}else setNotice(personal.reason?.message||t("个人数据读取失败，请重试。"));
     if(publicEvents.status==='fulfilled'){setEvents(publicEvents.value.events);if(publicEvents.value.sync)setState(current=>({...current,sync:publicEvents.value.sync}));if(publicEvents.value.warning)setNotice(publicEvents.value.warning);}setLoading(false);
   },[]);
-  useEffect(()=>{const preferred=localStorage.getItem('honors-language')==='en'?'en':'zh';setLanguage(preferred);void refresh(preferred);},[refresh]);
+  useEffect(()=>{void refresh('en');},[refresh]);
   useEffect(()=>{document.documentElement.lang=language==='en'?'en':'zh-CN';localStorage.setItem('honors-language',language);},[language]);
   function clearPrivate(){refreshId.current++;activeUser.current=null;setState(initial);setHours('0');setSelection(null);setNotice('');}
   async function authChanged(){clearPrivate();localStorage.setItem('honors-auth-change',JSON.stringify({nonce:crypto.randomUUID(),language}));await refresh(language);}

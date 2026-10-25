@@ -23,7 +23,7 @@ The production origin `https://fiu-honors-planner.vercel.app` must remain truste
 
 ## Language and account boundaries
 
-The header offers Chinese and English. Before login, browser storage remembers the selection. After login, the account's cloud preference wins, including on a different device. Dates, weekdays and times use America/New_York in either language. English uses original official descriptions or saved English summaries; Chinese uses the curated catalog summaries. No runtime LLM or translation API is called.
+The header offers Chinese and English. Guests start in English, including browsers with an older Chinese preference, and can switch during their visit. After login, the account's cloud preference wins, including on a different device. Dates, weekdays and times use America/New_York in either language. English uses original official descriptions or saved English summaries; Chinese uses the curated catalog summaries. No runtime LLM or translation API is called.
 
 All private reads and writes scope to the authenticated, verified Neon user ID. Clients cannot choose a data owner or reminder recipient. Writes also include the currently displayed account email so a stale page cannot save into a different account after a cookie change. Sign-out/account switches clear private view state, invalidate pending responses and notify other tabs. Focus/visibility checks revalidate the cookie session. Backup import aborts if its starting account changes.
 

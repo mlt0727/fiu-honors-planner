@@ -9,8 +9,8 @@ export const dynamic='force-dynamic';
 export async function GET(req:NextRequest){
   try{
     const user=await userSession();
-    if(!user)return NextResponse.json({records:[],preferences:defaults,drafts:[],session:null},{headers:{'Cache-Control':'no-store'}});
-    const language=req.nextUrl.searchParams.get('language')==='en'?'en':'zh';
+    if(!user)return NextResponse.json({records:[],preferences:{...defaults,language:'en'},drafts:[],session:null},{headers:{'Cache-Control':'no-store'}});
+    const language=req.nextUrl.searchParams.get('language')==='zh'?'zh':'en';
     await sql()`insert into honors_planner.preferences(user_id,data) values(${user.id},${JSON.stringify({...defaults,email:user.email,language})}) on conflict(user_id) do nothing`;
     const state=await loadState(user.id);
     const sync=await sql()`select last_success as "lastSuccess",last_attempt as "lastAttempt",error from honors_planner.sync_log where id=true`;
