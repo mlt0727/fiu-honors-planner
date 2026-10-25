@@ -1,15 +1,17 @@
 import {NextRequest,NextResponse} from 'next/server';
-import {ownerSession} from '@/lib/auth';
+import {userSession} from '@/lib/auth';
 import {loadState,loadEvents,sql,defaults} from '@/lib/db';
-import {upsertRecord} from '@/lib/store.mjs';
+import {upsertRecord,saveUserPreferences} from '@/lib/store.mjs';
 import items from '@/data/items.json';
 import {validateRecord,sameOrigin} from '@/lib/core.mjs';
 
 export const dynamic='force-dynamic';
-export async function GET(){
+export async function GET(req:NextRequest){
   try{
-    const user=await ownerSession();
-    if(!user)return NextResponse.json({records:[],preferences:defaults,drafts:[],session:null});
+    const user=await userSession();
+    if(!user)return NextResponse.json({records:[],preferences:defaults,drafts:[],session:null},{headers:{'Cache-Control':'no-store'}});
+    const language=req.nextUrl.searchParams.get('language')==='en'?'en':'zh';
+    await sql()`insert into honors_planner.preferences(user_id,data) values(${user.id},${JSON.stringify({...defaults,email:user.email,language})}) on conflict(user_id) do nothing`;
     const state=await loadState(user.id);
     const sync=await sql()`select last_success as "lastSuccess",last_attempt as "lastAttempt",error from honors_planner.sync_log where id=true`;
     return NextResponse.json({...state,preferences:{...state.preferences,email:state.preferences.email||user.email},session:{email:user.email,verified:true},sync:sync[0]||{lastSuccess:null,lastAttempt:null,error:null}},{headers:{'Cache-Control':'no-store'}});
@@ -18,10 +20,11 @@ export async function GET(){
 export async function POST(req:NextRequest){
   try{
     if(!sameOrigin(req.headers))return NextResponse.json({error:'无效来源'},{status:403});
-    const user=await ownerSession();
-    if(!user)return NextResponse.json({error:'请先使用所有者邮箱登录并完成邮箱验证。'},{status:401});
+    const user=await userSession();
+    if(!user)return NextResponse.json({error:'请先通过邮箱验证码登录。'},{status:401});
     if(Number(req.headers.get('content-length'))>15000)return NextResponse.json({error:'请求过大'},{status:413});
     const body=await req.json();
+    if(body.accountEmail!==user.email)return NextResponse.json({error:'账号已更改，请刷新后重试。'},{status:409});
     if(body.type==='record'){
       const r=validateRecord(body.record,items,body.record?.eventKey?.startsWith('event:')?await loadEvents():[]);
       const saved=await upsertRecord(sql(),user,r,defaults);
@@ -30,12 +33,9 @@ export async function POST(req:NextRequest){
     }
     if(body.type==='preferences'){
       const p=body.preferences;
-      if(!p||!Number.isFinite(p.hours)||p.hours<0||p.hours>10000||typeof p.weekly!=='boolean'||typeof p.deadlineReminders!=='boolean'||typeof p.eventFallback!=='boolean'||!Number.isInteger(p.revision))throw Error('无效的设置');
-      // Personal reminder recipients stay locked to the authenticated owner.
-      const data={hours:p.hours,weekly:p.weekly,deadlineReminders:p.deadlineReminders,eventFallback:p.eventFallback,email:user.email};
-      const saved=await sql()`insert into honors_planner.preferences(user_id,data) values(${user.id},${JSON.stringify(data)}) on conflict(user_id) do update set data=excluded.data,revision=honors_planner.preferences.revision+1 where honors_planner.preferences.revision=${p.revision} returning revision`;
-      if(!saved.length)return NextResponse.json({error:'设置已在另一台设备更改，请刷新。'},{status:409});
-      return NextResponse.json({revision:saved[0].revision});
+      const saved=await saveUserPreferences(sql(),user,p);
+      if(!saved)return NextResponse.json({error:'设置已在另一台设备更改，请刷新。'},{status:409});
+      return NextResponse.json(saved);
     }
     throw Error('未知操作');
   }catch(e){return NextResponse.json({error:e instanceof Error&&/无效|最多|未知/.test(e.message)?e.message:'保存失败，你的更改仍保留在当前页面，请重试。'},{status:400});}

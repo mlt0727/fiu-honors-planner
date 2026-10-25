@@ -1,24 +1,12 @@
 import assert from 'node:assert/strict';
-
-// Invalid credentials and a too-short password never create users or send email.
 const base=new URL(process.argv[2]||'https://fiu-honors-planner.vercel.app').origin;
-const owner=process.env.OWNER_EMAIL;
-assert.ok(owner,'Set OWNER_EMAIL before running this check.');
-async function request(path,body){
-  const response=await fetch(`${base}/api/auth/${path}`,{method:body?'POST':'GET',headers:{origin:base,'content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});
-  return {status:response.status,data:await response.json()};
-}
+async function request(path,body,origin=base){const response=await fetch(`${base}/api/auth/${path}`,{method:body?'POST':'GET',headers:{origin,'content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});return {status:response.status,data:await response.json()};}
 assert.deepEqual(await request('ok'),{status:200,data:{ok:true}});
-const login=await request('sign-in/email',{email:'qa-login@example.invalid',password:'Invalid-QA-credentials-123'});
-assert.equal(login.status,401,`Sign-in must reach credential validation: ${JSON.stringify(login)}`);
-assert.equal(login.data.code,'INVALID_EMAIL_OR_PASSWORD');
-const signup=await request('sign-up/email',{email:owner,password:'short',name:'Auth validation check'});
-assert.equal(signup.status,400,`Sign-up must reach password validation: ${JSON.stringify(signup)}`);
-assert.equal(signup.data.code,'PASSWORD_TOO_SHORT');
-const foreign=await request('sign-up/email',{email:'qa-login@example.invalid',password:'short',name:'Auth validation check'});
-assert.equal(foreign.status,403,'Non-owner registration must stay blocked.');
-const foreignVerification=await request('email-otp/verify-email',{email:'qa-otp@example.invalid',otp:'000000'});
-assert.equal(foreignVerification.status,403,'Non-owner email verification must be blocked.');
-const foreignResend=await request('email-otp/send-verification-otp',{email:'qa-otp@example.invalid',type:'email-verification'});
-assert.equal(foreignResend.status,403,'Non-owner OTP delivery must be blocked before contacting Neon.');
-console.log('Auth smoke check passed: production origin, login, signup validation, owner restriction. No user created or email sent.');
+assert.equal((await request('get-session')).data,null);
+const invalid=await request('sign-in/email-otp',{email:'qa-no-delivery@example.invalid',otp:'000000'});
+assert.equal(invalid.status,400,JSON.stringify(invalid));assert.equal(invalid.data.code,'INVALID_OTP');
+assert.equal((await request('email-otp/send-verification-otp',{email:'invalid',type:'sign-in'})).status,400);
+assert.equal((await request('email-otp/send-verification-otp',{email:'qa-no-delivery@example.invalid',type:'forget-password'})).status,400);
+assert.equal((await request('sign-in/email-otp',{email:'qa-no-delivery@example.invalid',otp:'000000'},'https://untrusted.example.invalid')).status,403);
+assert.equal((await request('sign-up/email',{email:'qa-no-delivery@example.invalid',password:'short'})).status,405);
+console.log('PASS: public OTP sign-in reaches provider validation, malformed delivery requests and cross-origin requests are blocked, password routes are disabled. No account created or email sent.');

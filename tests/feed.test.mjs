@@ -6,6 +6,7 @@ const xml=(link='https://fiu.campuslabs.com/engage/event/42',start='2026-10-29T1
 test('public feed updates known IDs and preserves verified credit mapping',()=>{
   const result=parseFeed(xml(),[{id:'42',title:'Workshop',itemIds:['a'],category:0,summary:'中文简介',deadline:null}],[]);
   assert.equal(result.length,1);assert.equal(result[0].location,'GC 100');assert.equal(result[0].start,'2026-10-29T21:00:00.000Z');assert.equal(result[0].summary,'中文简介');assert.deepEqual(result[0].itemIds,['a']);
+  assert.ok(result[0].description.includes('GC 100'));
 });
 test('feed rejects foreign URLs, malformed dates and oversized input',()=>{
   assert.deepEqual(parseFeed(xml('https://evil.example/engage/event/42'),[],[]),[]);

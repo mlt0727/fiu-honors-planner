@@ -5,6 +5,7 @@ import {progress, recommend, dueReminder, localDay, validateRecord, normalizeTit
 test('displayed dates include the weekday in New York, including the previous UTC day',()=>{
   assert.match(formatTime('2026-10-27T19:30:00Z'),/10月27日.*周二.*15:30/);
   assert.match(formatTime('2026-10-27T00:30:00Z'),/10月26日.*周一.*20:30/);
+  assert.match(formatTime('2026-10-27T19:30:00Z','en'),/Tue.*Oct.*27.*15:30/);
 });
 
 const items=[{id:'a',category:0,canonical:'advisor'},{id:'b',category:0,canonical:'research'},{id:'c',category:0,canonical:'advisor'},{id:'d',category:1,canonical:'career'}];

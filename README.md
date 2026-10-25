@@ -1,6 +1,6 @@
 # FIU Honors Planner
 
-Personal 2026–2027 Honors engagement planner. Chinese summaries, official English titles and source links, list/week views, four categories requiring two items each, separate attendance/official recognition, volunteer-hour tracking and Neon cloud sync.
+A Chinese/English 2026–2027 FIU Honors engagement planner. Everyone can sign in with an emailed six-digit code. Each verified account has independent progress across the four official categories (two experiences each), notes, attendance/official acceptance, volunteer hours, language and reminder drafts.
 
 Live site: https://fiu-honors-planner.vercel.app/
 
@@ -8,21 +8,24 @@ Private source: https://github.com/mlt0727/fiu-honors-planner
 
 ## Run
 
-Node 24 is used in production.
+Production uses Node 24.
 
 ```sh
 npm ci
 vercel link
 vercel env pull .env.local
-npm run db:init
 npm run dev
 ```
 
-Environment variables: `DATABASE_URL`, `NEON_AUTH_BASE_URL`, `NEON_AUTH_COOKIE_SECRET`, `OWNER_EMAIL`, `CRON_SECRET`. Provision Neon on Vercel's free plan with built-in auth. Keep all credentials in ignored `.env.local` and Vercel encrypted environment variables. Use a verified email matching `OWNER_EMAIL`; public sign-up for other accounts is rejected. The owner creates a dedicated website password through the login/settings form.
+Required server variables: `DATABASE_URL`, `NEON_AUTH_BASE_URL`, `NEON_AUTH_COOKIE_SECRET`, `CRON_SECRET`. Keep credentials in ignored `.env.local` and encrypted Vercel environment variables. `OWNER_EMAIL` is no longer used. Existing owner records stay under the same Neon user ID; there is no destructive data migration.
 
-In the production branch's Neon Auth settings, add `https://fiu-honors-planner.vercel.app` to trusted domains (include the scheme, without a trailing slash) and enable **Verify at Sign-up**. The server requires a verified owner email. Anonymous session reads do not validate these settings; test POST requests before handing off registration. The SDK throws authentication errors, which the form displays separately from network failures.
+The production origin `https://fiu-honors-planner.vercel.app` must remain trusted in Neon Auth. The app uses managed Email OTP: `emailOtp.sendVerificationOtp({type:'sign-in'})`, followed by `signIn.emailOtp`. The first successful code creates a verified account; returning users use the same flow. Password and password-registration proxy routes are disabled. Provider throttling remains in effect, and the form adds a 60-second resend delay. Codes are requested only after the user clicks the send/resend button.
 
-Neon's configured verification email contains a six-digit OTP. After registration the form switches to code entry. Existing unverified accounts can choose **已有验证码？验证邮箱** in Settings, enter their email and code, then sign in if Neon does not create a session automatically. **重新发送验证码** explicitly requests a new verification email; opening the form never sends one. Codes and passwords stay in component memory and are not logged, exported or stored in the planner database. OTP verification and resend proxy routes only accept the owner email.
+## Language and account boundaries
+
+The header offers Chinese and English. Before login, browser storage remembers the selection. After login, the account's cloud preference wins, including on a different device. Dates, weekdays and times use America/New_York in either language. English uses original official descriptions or saved English summaries; Chinese uses the curated catalog summaries. No runtime LLM or translation API is called.
+
+All private reads and writes scope to the authenticated, verified Neon user ID. Clients cannot choose a data owner or reminder recipient. Writes also include the currently displayed account email so a stale page cannot save into a different account after a cookie change. Sign-out/account switches clear private view state, invalidate pending responses and notify other tabs. Focus/visibility checks revalidate the cookie session. Backup import aborts if its starting account changes.
 
 ## Verify
 
@@ -31,31 +34,25 @@ npm test
 npm run typecheck
 npm run build
 node --env-file=.env.local scripts/check-db.mjs
-node --env-file=.env.local scripts/check-auth.mjs
+node scripts/check-auth.mjs http://localhost:3000
 ```
 
-The database integration check creates scoped disposable QA records and removes them in `finally`. It uses the production save function through two independent Neon connections, checks conflicts and preferences initialization, and never sends email.
+The database check uses two independent connections and disposable user IDs, verifies separate records/preferences/language/recipients/drafts and stale-write conflicts, then removes its rows. The auth smoke check uses malformed delivery requests and an invalid code for a nonexistent address; it does not send email or create an account. Browser QA uses intercepted OTP/session responses for successful login flows. Real inbox/code entry remains a human action.
 
-The auth smoke check uses invalid credentials and an intentionally too-short registration password. It validates the production origin, both auth POST routes and the owner restriction without creating an account or sending email. Pass another deployment URL as its first argument when needed.
+## Sources and refresh
 
-## Sources and updates
+`data/items.json` has all 128 options captured from the authorized Panther Connect session on October 23, 2026. Original English descriptions are retained; category counts are 33 / 41 / 36 / 18. `docs/sources/path-details.json` and `docs/source-catalog.json` retain the capture. Import a new authorized capture with `node scripts/import-source.mjs <capture.json>`.
 
-`data/items.json` contains all 128 options read from the user's authorized Panther Connect browser session on October 23, 2026. `docs/sources/path-details.json` retains source descriptions; `docs/source-catalog.json` retains the original directory. The importer accepts a new authorized capture as its argument: `node scripts/import-source.mjs <capture.json>`.
+The refresh button and the daily 13:00 UTC Vercel Cron really fetch `https://fiu.campuslabs.com/engage/events.rss`. They refresh known event IDs and exact catalog-title matches, preserving original English feed descriptions. A title match alone is not official Honors credit and is excluded from recommendations until verified. The public feed is a rolling window, not the signed-in pathway directory; it cannot refresh the full authenticated catalog. Missing feed entries are not cancellations. Refresh failures retain the last verified snapshot and show a failure; the last successful refresh time is displayed publicly.
 
-`data/events.json` contains five verified upcoming events and four known past events. Duplicate finance-workshop listings are merged. The UK information session maps to two categories, but a single event counts once. Identical source options count once within a semester. The writing-center description mismatch and missing descriptions are explicitly flagged.
+Seed events contain five verified future events and four historical events. Finance workshop duplicates are merged. A cross-category event can count toward one remaining eligible option, once. Official deadline: April 9, 2027 at 23:59 (source labels EST). Twenty service hours are separate and must be recorded in GivePulse.
 
-Daily Vercel Cron at 13:00 UTC refreshes the official public RSS feed. It updates known event times and locations; exact title matches without confirmed path attribution are marked unverified and excluded from recommendations. The public feed covers its own rolling window and cannot refresh the authenticated pathway catalog. A missing event in the feed is not treated as canceled; public-source failures retain the last verified snapshot and record a failure. Activity information should be rechecked on the linked official page before attending.
-
-All displayed times use `America/New_York`, including daylight saving. Unknown registration deadlines remain unknown; the seven-business-day accessibility request notice is never interpreted as a registration deadline. The annual official requirement deadline is reproduced as April 9, 2027 23:59 (source says EST). Annual 20 service hours are separate.
-
-After checking an event's official registration page, the owner can enter its deadline in the detail dialog. This private override syncs through Neon, is labeled as owner-entered in drafts, and participates in five-calendar-day reminders. The input uses New York local time even on a device in another timezone.
+Unknown registration deadlines stay unknown. Each user can enter a verified personal deadline after checking the official page; it stays private and participates in five-calendar-day reminders. All wall-clock inputs use New York time, including DST validation.
 
 ## Reminder review mode
 
-The job prepares a weekly digest on Mondays and deadline reminders five New York calendar days before known registration deadlines. Optional event-start reminders are separately labeled. Completed and dismissed items, duplicate aliases, expired events and full categories are excluded. Draft keys deduplicate repeated runs.
+The daily job prepares weekly drafts on Mondays and reminders five New York calendar days before known deadlines. Optional event-start reminders are separately labeled. Completed/dismissed items, duplicate aliases, expired events and full categories are excluded separately for each user. New drafts follow the account language. Saved draft previews are regenerated in the current UI language and progress; stored source drafts are not modified by viewing them.
 
-**No email sending provider is connected and no email is sent automatically.** The owner's standing instruction requires reviewing the exact recipients, subject, body and attachments/links, then explicitly confirming each email. The app provides complete previews and an `.eml` draft download. Enabling unattended email would require a new explicit change to that preference and a configured sending service.
+Activity reminders remain draft-only: complete previews and `.eml` downloads, with no unattended sending provider. The user's standing preference requires reviewing each recipient, subject, body and attachment/link list before explicit confirmation to send that email. Authentication codes use Neon's managed delivery only when a human requests one.
 
-Neon stores only owner-scoped progress, preferences and pending drafts. The site does not log into FIU, copy FIU credentials, RSVP, or submit official experiences. Official reporting still happens in Panther Connect/GivePulse.
-
-The approved visual reference is `docs/design.png`. Necessary content extensions and verification evidence are recorded in `docs/verification.md`.
+The app does not log into FIU, copy FIU credentials, RSVP or submit official experiences. Reporting stays in Panther Connect/GivePulse. See `docs/verification.md` for the verification ledger.
