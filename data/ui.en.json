@@ -137,7 +137,7 @@
   "未能保存，请检查登录或页面提示；你的编辑仍在。": "Could not save. Check your sign-in and the page notice. Your edits are still here.",
   "本周": "This week",
   "条活动记录及备份中的设置，可能更新现有记录。系统会验证活动归属，并在版本冲突时停止。": "activity records and settings from this backup. Existing records may be updated. Invalid attribution or a version conflict stops the import.",
-  "来源：": "Source:",
+  "来源：": "Source: ",
   "查看全部 128 个选项": "Browse all 128 options",
   "查看官方英文说明": "Read the official description",
   "查看官方说明与报名": "Official details & registration",

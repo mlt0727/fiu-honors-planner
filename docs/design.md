@@ -24,7 +24,7 @@ Weekly digest of the next seven days; separate registration-deadline reminders f
 
 ## Design tokens
 
-White background #ffffff; navy #081f3d; gold #b99550; gray text #697386; cool gray border #d8dee7; category accents green/blue/gold/purple. Inter (self-hosted via next/font) with system and Chinese fallbacks; 36px primary heading, 24px section heading, 18px row title, 15px body, 14px metadata. Sidebar 240px at 1505px reference width; main padding 36px. Outline icons, 6px button/row radius. No photographs; the only gradient is the sidebar's faint ambient light. Necessary extensions: authentication form, editable detail dialog, empty/error states, data import/export and reminder drafts use the same tokens.
+Warm paper page #f6f5f1 with white cards and hairline #e3e0d8 borders; navy #081f3d; gold #b99550 (deep #8b661f on text); gray text #697386; category accents green/blue/gold/purple. Instrument Serif for the display voice (h1, h2, date numerals, progress counts; Chinese headings fall back to the bold sans) and Inter for UI, both self-hosted via next/font; 36px primary heading, 24px section heading, 18px row title, 15px body, 14px metadata. Sidebar 240px at 1505px reference width; main padding 36px. Outline icons; 8px controls, 10px cards, 16px dialogs. The progress total is a navy block with a gold serif count. No photographs; gradients are limited to the sidebar's ambient light and grain, the navy total block, the gold track and the primary button. Necessary extensions: authentication form, editable detail dialog, empty/error states, data import/export and reminder drafts use the same tokens.
 
 ## Motion
 
