@@ -66,7 +66,7 @@ All private reads and writes are scoped to the authenticated, verified Neon user
 
 ### Design
 
-Navy sidebar, warm paper surface, white cards, gold accents. Instrument Serif carries the headings and numerals, Inter the interface. Motion is purposeful: one authored entrance, View Transitions between pages, and layered hover and press feedback, all collapsing to instant under `prefers-reduced-motion`. See `docs/design.md`.
+Navy sidebar, warm paper surface, white cards, gold accents. Instrument Serif carries the headings and numerals, Inter the interface. Motion is purposeful and built on GSAP: a sequenced entrance with a masked word-by-word heading, rolling progress counters, Flip choreography when filters change, staged dialogs, View Transitions between pages, and layered hover and press feedback, all collapsing to instant under `prefers-reduced-motion`. See `docs/design.md`.
 
 ---
 

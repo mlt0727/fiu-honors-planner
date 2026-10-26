@@ -12,9 +12,11 @@
     "db:init": "node --env-file=.env.local scripts/init-db.mjs"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "@neondatabase/auth": "0.7.0-beta",
     "@neondatabase/serverless": "1.2.0",
     "fast-xml-parser": "5.11.2",
+    "gsap": "^3.15.0",
     "next": "16.4.3",
     "react": "19.3.1",
     "react-dom": "19.3.1"
