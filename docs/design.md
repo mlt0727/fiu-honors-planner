@@ -24,4 +24,8 @@ Weekly digest of the next seven days; separate registration-deadline reminders f
 
 ## Design tokens
 
-White background #ffffff; navy #081f3d; gold #b99550; gray text #697386; cool gray border #d8dee7; category accents green/blue/gold/purple. System sans-serif with Chinese fallbacks; 36px primary heading, 24px section heading, 18px row title, 15px body, 14px metadata. Sidebar 240px at 1505px reference width; main padding 36px. Outline icons, 6px button/row radius. No photographs or gradients. Necessary extensions: authentication form, editable detail dialog, empty/error states, data import/export and reminder drafts use the same tokens.
+White background #ffffff; navy #081f3d; gold #b99550; gray text #697386; cool gray border #d8dee7; category accents green/blue/gold/purple. Inter (self-hosted via next/font) with system and Chinese fallbacks; 36px primary heading, 24px section heading, 18px row title, 15px body, 14px metadata. Sidebar 240px at 1505px reference width; main padding 36px. Outline icons, 6px button/row radius. No photographs; the only gradient is the sidebar's faint ambient light. Necessary extensions: authentication form, editable detail dialog, empty/error states, data import/export and reminder drafts use the same tokens.
+
+## Motion
+
+Operate mode: motion explains state and continuity, never waits. One authored entrance on load (heading blur-in, progress tracks fill from zero, rows stagger up to seven). Page switches use the View Transitions API: the section crossfades and rises while the gold nav indicator slides between items. Feedback is layered: hover lift with an offset shadow, press scale, gold date on row hover, pop on saved bookmark and total count, spinning refresh icon, dialog blur-scale entrance. Easing cubic-bezier(.16,1,.3,1); 150-400 ms for state, 700 ms for the entrance only. prefers-reduced-motion collapses every animation and transition to instant and disables view transitions.
