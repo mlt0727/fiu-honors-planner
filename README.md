@@ -4,7 +4,7 @@ A Chinese/English 2026–2027 FIU Honors engagement planner. Everyone can sign i
 
 Live site: https://fiu-honors-planner.vercel.app/
 
-Private source: https://github.com/mlt0727/fiu-honors-planner
+Source: https://github.com/mlt0727/fiu-honors-planner
 
 ## Run
 
