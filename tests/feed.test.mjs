@@ -13,10 +13,10 @@ test('feed rejects foreign URLs, malformed dates and oversized input',()=>{
   assert.deepEqual(parseFeed(xml(undefined,'invalid'),[{id:'42'}],[]),[]);
   assert.throws(()=>parseFeed('x'.repeat(3_000_001),[],[]));
 });
-test('title-only matches remain unverified and do not enter email recommendations',()=>{
+test('an event titled exactly like a Paths option is verified and enters email recommendations',()=>{
   const matches=parseFeed(xml(),[],[{id:'a',title:'Workshop',category:0,summary:'说明',mode:'event'}]);
-  assert.equal(matches[0].creditVerified,false);
-  assert.equal(makeDraft(matches,[{id:'a',category:0}],[],{email:'owner@example.com'},new Date('2026-10-23T20:00:00Z')).eventIds.length,0);
+  assert.equal(matches[0].creditVerified,true);assert.equal(matches[0].sourceNote,'活动标题与 Paths 选项完全一致。');
+  assert.equal(makeDraft(matches,[{id:'a',category:0}],[],{email:'owner@example.com'},new Date('2026-10-23T20:00:00Z')).eventIds.length,1);
 });
 test('email excludes completed categories and labels start reminders independently of deadlines',()=>{
   const items=[{id:'a',category:0},{id:'b',category:0},{id:'c',category:1}];
@@ -52,4 +52,12 @@ test('an option\'s own rule (host organization or Honors series) attributes feed
   const [event]=parseFeed(hosted,[],items);
   assert.deepEqual(event.itemIds,['su']);assert.equal(event.category,1);assert.equal(event.creditVerified,true);assert.equal(event.host,'StartUP FIU');assert.match(event.sourceNote,/StartUP FIU Events/);
   assert.equal(makeDraft([event],items,[],{email:'owner@example.com'},new Date('2026-10-23T20:00:00Z')).eventIds.length,1);
+});
+test('an entry with several hosts keeps every host name and still matches an exact pathway title',()=>{
+  const items=[{id:'stem',title:'STEM Faculty Panel & Brunch',category:0,summary:'座谈',mode:'event'},{id:'su',title:'StartUP FIU Events',category:1,summary:'创业',mode:'event'}];
+  const body=xml().replace('<title>Workshop</title>','<title>STEM Faculty Panel &amp; Brunch</title><host xmlns="events">Phage Research Club</host><host xmlns="events">Undergraduate Research Society</host>');
+  const [event]=parseFeed(body,[],items);
+  assert.deepEqual(event.itemIds,['stem']);assert.equal(event.host,'Phage Research Club · Undergraduate Research Society');assert.equal(event.creditVerified,true);
+  const byOrg=xml().replace('<title>Workshop</title>','<title>Pitch Night</title><host xmlns="events">Some Club</host><host xmlns="events">StartUP FIU</host>');
+  assert.deepEqual(parseFeed(byOrg,[],items)[0].itemIds,['su']);
 });

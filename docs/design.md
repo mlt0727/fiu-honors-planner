@@ -6,7 +6,7 @@ Approved 2026-10-23: personal use, cross-device sync, Chinese summaries and offi
 
 Use design.png as the visual reference: navy sidebar, white main surface, gold accent, four progress columns, horizontal event rows. Navigation: 活动列表 / 我的进度 / 邮件预览. Settings controls sign-in and synchronization. On mobile, sidebar becomes a compact top navigation; rows stack without horizontal overflow.
 
-Preserve all 128 source options in their four categories. Each category requires two elective items. Separate individual scheduled events from self-reported experiences, undated opportunities and series. Each row has a Chinese explanation, official source link, event time, location and explicitly unknown registration deadline when absent.
+Preserve all 132 source options in their four categories. Each category requires two elective items. Separate individual scheduled events from self-reported experiences, undated opportunities and series. Each row has a Chinese explanation, official source link, event time, location and explicitly unknown registration deadline when absent.
 
 Personal records distinguish planned, attended and officially accepted; attended or accepted counts toward recommendation suppression, capped at two per category, while official accepted counts remain separate. Do not count one scheduled event twice across categories or duplicate source entries.
 

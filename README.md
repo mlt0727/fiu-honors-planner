@@ -1,6 +1,6 @@
 # FIU Honors Planner
 
-Plan and track your FIU Honors College engagement pathway for 2026–2027: all 128 official options, the verified events behind them, your progress toward two experiences in each of four categories, and reminder emails you review before anything is sent.
+Plan and track your FIU Honors College engagement pathway for 2026–2027: all 132 official options, the verified events behind them, your progress toward two experiences in each of four categories, and reminder emails you review before anything is sent.
 
 **Live site: <https://fiu-honors-planner.vercel.app/>**
 
@@ -8,7 +8,7 @@ Plan and track your FIU Honors College engagement pathway for 2026–2027: all 1
 
 ## What it does
 
-- **Every official option in one place.** All 128 pathway options across Academic & Research, Career Development, Personal & Social Wellness, and Honors College Week, captured from the Panther Connect pathway on October 23, 2026, each with its official description and a link to the source page.
+- **Every official option in one place.** All 132 pathway options across Academic & Research, Career Development, Personal & Social Wellness, and Honors College Week, as listed on the Panther Connect pathway on November 2, 2026, each with its official description and a link to the source page.
 - **Verified events, not guesses.** Scheduled events are kept apart from self-reported experiences, undated opportunities, and recurring series. Each event shows its New York time, weekday, and location, and says plainly when the registration deadline is not published.
 - **Recommendations that respect the rules.** The list defaults to activities that still count toward a category you have not finished. One event never counts twice, and a cross-category event fills only one remaining slot.
 - **Private progress, synced across devices.** Sign in with a six-digit email code. Your planned, attended, and officially accepted records, notes, verified deadlines, and volunteer hours are stored to your account and available wherever you sign in.
@@ -20,7 +20,7 @@ Plan and track your FIU Honors College engagement pathway for 2026–2027: all 1
 ## How to use it
 
 1. **Open** <https://fiu-honors-planner.vercel.app/>. Browsing needs no account.
-2. **Browse and filter.** Search by keyword, pick a category, and choose a time filter: upcoming events, all 128 options, self-scheduled experiences, undated, or past. Switch between list view and week view, or click a progress column to jump to that category.
+2. **Browse and filter.** Search by keyword, pick a category, and choose a time filter: upcoming events, all 132 options, self-scheduled experiences, undated, or past. Switch between list view and week view, or click a progress column to jump to that category.
 3. **Sign in.** Open *Account & settings*, enter your email, and type the six-digit code you receive. The first successful code creates your account.
 4. **Plan and record.** Click the bookmark on a row to mark it as planned, or open *View details* to set the status (planned, attended, officially accepted, not interested), the attendance date, a verified registration deadline, and notes.
 5. **Track the four categories.** The progress band shows attended and officially accepted counts per category and your total out of 8. *My progress* lists your records and holds the separate 20 annual volunteer service hours.
@@ -57,7 +57,7 @@ The database check uses disposable user IDs and removes its rows. The auth smoke
 ### Data and refresh
 
 - `data/items.json` holds the 128 options (33 / 41 / 36 / 18 per category) with their original descriptions; `docs/sources/` keeps the capture. Import a new authorized capture with `node scripts/import-source.mjs <capture.json>`.
-- The refresh button and the daily 13:00 UTC Vercel Cron fetch `https://fiu.campuslabs.com/engage/events.rss`, update known event IDs, exact catalog-title matches, and events covered by an option's own rule (an "X Events" option matches events hosted by X; Honors series such as Honors Hours match by title), and keep the last verified snapshot on failure. Rule-matched events show which option they were matched to; a bare title match is not Honors credit until verified.
+- The refresh button and the daily 13:00 UTC Vercel Cron fetch `https://fiu.campuslabs.com/engage/events.rss`, update known event IDs, exact catalog-title matches, and events covered by an option's own rule (an "X Events" option matches events hosted by X; Honors series such as Honors Hours match by title), and keep the last verified snapshot on failure. An event titled exactly like a Paths option counts toward that option; rule-matched events show which option they were matched to. Events with several host organizations are matched on every host.
 - Official pathway deadline: April 9, 2027 at 23:59 (the source labels it EST). All wall-clock values use America/New_York, including DST validation.
 
 ### Privacy
@@ -72,13 +72,13 @@ Navy sidebar, warm paper surface, white cards, gold accents. Instrument Serif ca
 
 ## 中文
 
-规划并跟踪你在 FIU Honors College 2026–2027 参与路径上的进度：全部 128 个官方选项、背后已核实的活动、"四个分类各完成两项经历"的个人进度，以及发送前先由你审核的提醒邮件。
+规划并跟踪你在 FIU Honors College 2026–2027 参与路径上的进度：全部 132 个官方选项、背后已核实的活动、"四个分类各完成两项经历"的个人进度，以及发送前先由你审核的提醒邮件。
 
 **网站：<https://fiu-honors-planner.vercel.app/>**（页眉可切换中文界面）
 
 **功能**
 
-- 128 个官方选项按四个分类整理，保留官方说明与原页面链接，中文界面下显示整理好的中文摘要。
+- 132 个官方选项按四个分类整理，保留官方说明与原页面链接，中文界面下显示整理好的中文摘要。
 - 已排期活动与自行安排的经历、未公布日期的机会分开显示；时间按纽约时区，报名截止未公布时如实标注。
 - 推荐只显示仍能计入未完成分类的活动，一场活动不重复计数。
 - 邮箱六位验证码登录，计划 / 已参加 / 学校已认可记录、备注、志愿服务小时云端同步。

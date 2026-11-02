@@ -429,6 +429,32 @@
     "sourceCheckedAt": "2026-10-23T20:00:00Z"
   },
   {
+    "id": "100016",
+    "title": "Teach the Truth Tour to Rosewood",
+    "category": 0,
+    "canonical": "0:teach the truth tour to rosewood",
+    "summary": "前往 Rosewood 的 Teach the Truth 历史之旅活动。官方条目没有详细简介。",
+    "description": "",
+    "sourceUrl": "https://fiu.campuslabs.com/engage/involvement/paths#/domain/18646/item/100016/details",
+    "mode": "event",
+    "semester": "any",
+    "sourceIssue": "官方没有详细说明；中文简介按标题整理。",
+    "sourceCheckedAt": "2026-11-02T05:00:00Z"
+  },
+  {
+    "id": "100039",
+    "title": "STEM Faculty Panel & Brunch",
+    "category": 0,
+    "canonical": "0:stem faculty panel brunch",
+    "summary": "STEM 教师座谈与早午餐，由本科生研究协会等学生组织联合主办。",
+    "description": "",
+    "sourceUrl": "https://fiu.campuslabs.com/engage/involvement/paths#/domain/18646/item/100039/details",
+    "mode": "event",
+    "semester": "any",
+    "sourceIssue": "官方没有详细说明；中文简介按标题整理。",
+    "sourceCheckedAt": "2026-11-02T05:00:00Z"
+  },
+  {
     "id": "96765",
     "title": "Internship, Micro-Internship or Job Completion (Summer B/Fall)",
     "category": 1,
@@ -962,6 +988,19 @@
     "sourceCheckedAt": "2026-10-23T20:00:00Z"
   },
   {
+    "id": "100017",
+    "title": "S.T.I.C.H Halloween spooky night",
+    "category": 1,
+    "canonical": "1:s t i c h halloween spooky night",
+    "summary": "S.T.I.C.H 组织的万圣节之夜活动。官方条目没有详细简介。",
+    "description": "",
+    "sourceUrl": "https://fiu.campuslabs.com/engage/involvement/paths#/domain/18680/item/100017/details",
+    "mode": "event",
+    "semester": "any",
+    "sourceIssue": "官方没有详细说明；中文简介按标题整理。",
+    "sourceCheckedAt": "2026-11-02T05:00:00Z"
+  },
+  {
     "id": "96802",
     "title": "Attend Relay for Life",
     "category": 2,
@@ -1428,6 +1467,19 @@
     "semester": "any",
     "sourceIssue": "官方没有详细说明；中文简介按标题整理。",
     "sourceCheckedAt": "2026-10-23T20:00:00Z"
+  },
+  {
+    "id": "100015",
+    "title": "Halloween Party (Green Campus Initiative) (Pumpkin Carving GCI Halloween Party)",
+    "category": 2,
+    "canonical": "2:halloween party green campus initiative pumpkin carving gci halloween party",
+    "summary": "Green Campus Initiative 的万圣节南瓜雕刻派对。官方条目没有详细简介。",
+    "description": "",
+    "sourceUrl": "https://fiu.campuslabs.com/engage/involvement/paths#/domain/18681/item/100015/details",
+    "mode": "event",
+    "semester": "any",
+    "sourceIssue": "官方没有详细说明；中文简介按标题整理。",
+    "sourceCheckedAt": "2026-11-02T05:00:00Z"
   },
   {
     "id": "96762",
