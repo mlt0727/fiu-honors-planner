@@ -32,13 +32,13 @@ test('a cross-category event recommends its remaining eligible credit option',()
   assert.match(draft.body,/分类：职业发展/);assert.doesNotMatch(draft.body,/分类：学术与研究/);
 });
 test('feed text decodes entities, drops the repeated title block, and events hosted by Honors College without a catalog match are not kept',()=>{
-  const body=xml().replace('<![CDATA[','<![CDATA[<div class="p-name summary">Workshop</div><p>Nerve-wracking&mdash;but we&rsquo;ll help &#8220;you&#8221;</p>');
+  const body=xml().replace('<![CDATA[','<![CDATA[<div class="p-name summary">Workshop</div><p>Nerve-wracking&mdash;but we&rsquo;ll help &#8220;you&#8221; Ferr&eacute;&zwj;!</p>');
   const [match]=parseFeed(body,[],[{id:'a',title:'Workshop',category:0,summary:'说明',mode:'event'}]);
-  assert.equal(match.summaryEn,'Nerve-wracking\u2014but we\u2019ll help \u201cyou\u201d x x GC 100');assert.ok(!match.description.startsWith('Workshop'));
+  assert.equal(match.summaryEn,'Nerve-wracking\u2014but we\u2019ll help \u201cyou\u201d Ferr\u00e9! x x GC 100');assert.ok(!match.description.startsWith('Workshop'));
   const hosted=xml().replace('<title>Workshop</title>','<title>Spring 2027 Course Showcase</title><host xmlns="events">FIU Honors College</host>');
   assert.deepEqual(parseFeed(hosted,[],[{id:'a',title:'Other',category:0,summary:'说明',mode:'event'}]),[]);
 });
-test('an option\'s own rule (host organization or Honors series) attributes feed events and marks them verified with a note',()=>{
+test('an option\'s own rule (host organization or Honors series) attributes feed events, flagged as rule matches that stay out of recommendations',()=>{
   const items=[{id:'su',title:'StartUP FIU Events',category:1,summary:'创业',mode:'event'},{id:'cls',title:'Center for Leadership & Service Events',category:1,summary:'领导力',mode:'event'},{id:'ra',title:'Parkview RA Events (Personal & Social Wellness Topics)',category:2,summary:'RA',mode:'event'},{id:'hh',title:'Honors Hours: A,R &S',category:0,summary:'HH',mode:'event'},{id:'sa',title:'Honors Study Abroad - Instagram Lives',category:2,summary:'SA',mode:'event'},{id:'x',title:'Utilize Center for Excellence in Writing',category:0,summary:'写作',mode:'experience'}];
   const ids=(title,host)=>matchOptions(items,title,host).matched.map(i=>i.id);
   assert.deepEqual(ids('Pitch Night','StartUP FIU'),['su']);
@@ -50,14 +50,14 @@ test('an option\'s own rule (host organization or Honors series) attributes feed
   assert.deepEqual(ids('Spring 2027 Course Showcase 1','FIU Honors College'),[]);
   const hosted=xml().replace('<title>Workshop</title>','<title>Pitch Night</title><host xmlns="events">StartUP FIU</host>');
   const [event]=parseFeed(hosted,[],items);
-  assert.deepEqual(event.itemIds,['su']);assert.equal(event.category,1);assert.equal(event.creditVerified,true);assert.equal(event.host,'StartUP FIU');assert.match(event.sourceNote,/StartUP FIU Events/);
-  assert.equal(makeDraft([event],items,[],{email:'owner@example.com'},new Date('2026-10-23T20:00:00Z')).eventIds.length,1);
+  assert.deepEqual(event.itemIds,['su']);assert.equal(event.category,1);assert.equal(event.rule,true);assert.equal(event.creditVerified,false);assert.equal(event.host,'StartUP FIU');assert.match(event.sourceNote,/StartUP FIU Events/);
+  assert.equal(makeDraft([event],items,[],{email:'owner@example.com'},new Date('2026-10-23T20:00:00Z')).eventIds.length,0);
 });
 test('an entry with several hosts keeps every host name and still matches an exact pathway title',()=>{
   const items=[{id:'stem',title:'STEM Faculty Panel & Brunch',category:0,summary:'座谈',mode:'event'},{id:'su',title:'StartUP FIU Events',category:1,summary:'创业',mode:'event'}];
   const body=xml().replace('<title>Workshop</title>','<title>STEM Faculty Panel &amp; Brunch</title><host xmlns="events">Phage Research Club</host><host xmlns="events">Undergraduate Research Society</host>');
   const [event]=parseFeed(body,[],items);
-  assert.deepEqual(event.itemIds,['stem']);assert.equal(event.host,'Phage Research Club · Undergraduate Research Society');assert.equal(event.creditVerified,true);
+  assert.deepEqual(event.itemIds,['stem']);assert.equal(event.host,'Phage Research Club · Undergraduate Research Society');assert.equal(event.creditVerified,true);assert.equal(event.rule,undefined);
   const byOrg=xml().replace('<title>Workshop</title>','<title>Pitch Night</title><host xmlns="events">Some Club</host><host xmlns="events">StartUP FIU</host>');
   assert.deepEqual(parseFeed(byOrg,[],items)[0].itemIds,['su']);
 });

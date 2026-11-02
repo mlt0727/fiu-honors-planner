@@ -57,7 +57,7 @@ The database check uses disposable user IDs and removes its rows. The auth smoke
 ### Data and refresh
 
 - `data/items.json` holds the 128 options (33 / 41 / 36 / 18 per category) with their original descriptions; `docs/sources/` keeps the capture. Import a new authorized capture with `node scripts/import-source.mjs <capture.json>`.
-- The refresh button and the daily 13:00 UTC Vercel Cron fetch `https://fiu.campuslabs.com/engage/events.rss`, update known event IDs, exact catalog-title matches, and events covered by an option's own rule (an "X Events" option matches events hosted by X; Honors series such as Honors Hours match by title), and keep the last verified snapshot on failure. An event titled exactly like a Paths option counts toward that option; rule-matched events show which option they were matched to. Events with several host organizations are matched on every host.
+- The refresh button and the daily 13:00 UTC Vercel Cron fetch `https://fiu.campuslabs.com/engage/events.rss`, update known event IDs, exact catalog-title matches, and events covered by an option's own rule (an "X Events" option matches events hosted by X; Honors series such as Honors Hours match by title), and keep the last verified snapshot on failure. An event titled exactly like a Paths option counts toward that option. Events matched only by an option's rule are flagged as host matches, hidden unless "Also show host-matched events" is on, and never recommended in emails. Events with several host organizations are matched on every host.
 - Official pathway deadline: April 9, 2027 at 23:59 (the source labels it EST). All wall-clock values use America/New_York, including DST validation.
 
 ### Privacy

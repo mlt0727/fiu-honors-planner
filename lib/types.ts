@@ -1,5 +1,5 @@
 export type Item={id:string;title:string;category:number;canonical:string;summary:string;description:string;sourceUrl:string;mode:string;semester:string;sourceIssue:string|null;sourceCheckedAt:string};
-export type Event={id:string;title:string;itemIds:string[];category:number;host?:string;summary:string;summaryEn?:string;description?:string;start:string;end:string|null;location:string;deadline:string|null;deadlineSource?:string;sourceUrl:string;sourceCheckedAt:string;sourceNote?:string;alternateUrls?:string[];creditVerified?:boolean};
+export type Event={id:string;title:string;itemIds:string[];category:number;host?:string;rule?:boolean;summary:string;summaryEn?:string;description?:string;start:string;end:string|null;location:string;deadline:string|null;deadlineSource?:string;sourceUrl:string;sourceCheckedAt:string;sourceNote?:string;alternateUrls?:string[];creditVerified?:boolean};
 export type Status='none'|'planned'|'attended'|'accepted'|'dismissed';
 export type RecordEntry={itemId:string;eventKey:string;category:number;status:Status;note:string;date:string;revision:number;deadline?:string};
 export type Language='zh'|'en';
