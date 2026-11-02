@@ -6,7 +6,7 @@ import {SplitText} from 'gsap/SplitText';
 import {Flip} from 'gsap/Flip';
 
 gsap.registerPlugin(useGSAP,SplitText,Flip);
-gsap.defaults({ease:'power3.out',duration:.5});
+gsap.defaults({ease:'power3.out',duration:.5});gsap.config({nullTargetWarn:false});
 if(process.env.NODE_ENV!=='production'&&typeof window!=='undefined')(window as unknown as {gsap:typeof gsap}).gsap=gsap;
 
 export {gsap,useGSAP,SplitText,Flip};

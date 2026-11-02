@@ -9,6 +9,7 @@ Plan and track your FIU Honors College engagement pathway for 2026–2027: all 1
 ## What it does
 
 - **Every official option in one place.** All 128 pathway options across Academic & Research, Career Development, Personal & Social Wellness, and Honors College Week, captured from the Panther Connect pathway on October 23, 2026, each with its official description and a link to the source page.
+- **The Paths checklist, as Panther Connect lists it.** The default view mirrors the pathway page: four categories, every option in source order, your status on each, and the scheduled sessions that fulfil an option nested right under it.
 - **Verified events, not guesses.** Scheduled events are kept apart from self-reported experiences, undated opportunities, and recurring series. Each event shows its New York time, weekday, and location, and says plainly when the registration deadline is not published.
 - **Recommendations that respect the rules.** The list defaults to activities that still count toward a category you have not finished. One event never counts twice, and a cross-category event fills only one remaining slot.
 - **Private progress, synced across devices.** Sign in with a six-digit email code. Your planned, attended, and officially accepted records, notes, verified deadlines, and volunteer hours are stored to your account and available wherever you sign in.
@@ -20,7 +21,7 @@ Plan and track your FIU Honors College engagement pathway for 2026–2027: all 1
 ## How to use it
 
 1. **Open** <https://fiu-honors-planner.vercel.app/>. Browsing needs no account.
-2. **Browse and filter.** Search by keyword, pick a category, and choose a time filter: upcoming events, all 128 options, self-scheduled experiences, undated, or past. Switch between list view and week view, or click a progress column to jump to that category.
+2. **Browse and filter.** The Paths checklist opens first; switch to list view to search by keyword, pick a category, and choose a time filter: upcoming events, all 128 options, self-scheduled experiences, undated, or past. Switch between list view and week view, or click a progress column to jump to that category.
 3. **Sign in.** Open *Account & settings*, enter your email, and type the six-digit code you receive. The first successful code creates your account.
 4. **Plan and record.** Click the bookmark on a row to mark it as planned, or open *View details* to set the status (planned, attended, officially accepted, not interested), the attendance date, a verified registration deadline, and notes.
 5. **Track the four categories.** The progress band shows attended and officially accepted counts per category and your total out of 8. *My progress* lists your records and holds the separate 20 annual volunteer service hours.
@@ -78,7 +79,7 @@ Navy sidebar, warm paper surface, white cards, gold accents. Instrument Serif ca
 
 **功能**
 
-- 128 个官方选项按四个分类整理，保留官方说明与原页面链接，中文界面下显示整理好的中文摘要。
+- 默认视图就是 Paths 清单：四个分类、128 个选项按原顺序列出，每项下面挂着能计入它的已排期场次；保留官方说明与原页面链接，中文界面下显示整理好的中文摘要。
 - 已排期活动与自行安排的经历、未公布日期的机会分开显示；时间按纽约时区，报名截止未公布时如实标注。
 - 推荐只显示仍能计入未完成分类的活动，一场活动不重复计数。
 - 邮箱六位验证码登录，计划 / 已参加 / 学校已认可记录、备注、志愿服务小时云端同步。
