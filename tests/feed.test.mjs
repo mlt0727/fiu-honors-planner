@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {parseFeed} from '../lib/feed.mjs';
+import {parseFeed,matchOptions} from '../lib/feed.mjs';
 import {makeDraft} from '../lib/reminders.mjs';
 const xml=(link='https://fiu.campuslabs.com/engage/event/42',start='2026-10-29T17:00:00.0000000-04:00')=>`<rss><channel><item><title>Workshop</title><link>${link}</link><description><![CDATA[<time class="dt-start dtstart" datetime="${start}">x</time><time class="dt-end dtend" datetime="2026-10-29T18:00:00-04:00">x</time><span class="p-location location">GC 100</span>]]></description></item></channel></rss>`;
 test('public feed updates known IDs and preserves verified credit mapping',()=>{
@@ -37,4 +37,19 @@ test('feed text decodes entities, drops the repeated title block, and events hos
   assert.equal(match.summaryEn,'Nerve-wracking\u2014but we\u2019ll help \u201cyou\u201d x x GC 100');assert.ok(!match.description.startsWith('Workshop'));
   const hosted=xml().replace('<title>Workshop</title>','<title>Spring 2027 Course Showcase</title><host xmlns="events">FIU Honors College</host>');
   assert.deepEqual(parseFeed(hosted,[],[{id:'a',title:'Other',category:0,summary:'说明',mode:'event'}]),[]);
+});
+test('an option\'s own rule (host organization or Honors series) attributes feed events and marks them verified with a note',()=>{
+  const items=[{id:'su',title:'StartUP FIU Events',category:1,summary:'创业',mode:'event'},{id:'cls',title:'Center for Leadership & Service Events',category:1,summary:'领导力',mode:'event'},{id:'ra',title:'Parkview RA Events (Personal & Social Wellness Topics)',category:2,summary:'RA',mode:'event'},{id:'hh',title:'Honors Hours: A,R &S',category:0,summary:'HH',mode:'event'},{id:'sa',title:'Honors Study Abroad - Instagram Lives',category:2,summary:'SA',mode:'event'},{id:'x',title:'Utilize Center for Excellence in Writing',category:0,summary:'写作',mode:'experience'}];
+  const ids=(title,host)=>matchOptions(items,title,host).matched.map(i=>i.id);
+  assert.deepEqual(ids('Pitch Night','StartUP FIU'),['su']);
+  assert.deepEqual(ids('Service Day','Center for Leadership and Service (CLS) Programs'),['cls']);
+  assert.deepEqual(ids('Game Night','Parkview RA'),['ra']);
+  assert.deepEqual(ids('Honors Hours \u2014 HWCOM MPAS Session','FIU Honors College'),['hh']);
+  assert.deepEqual(ids('Honors College Study Abroad Instagram Live - Italy Q&A','FIU Honors College'),['sa']);
+  assert.deepEqual(ids('Honors Hours \u2014 Something','Some Other Club'),[]);
+  assert.deepEqual(ids('Spring 2027 Course Showcase 1','FIU Honors College'),[]);
+  const hosted=xml().replace('<title>Workshop</title>','<title>Pitch Night</title><host xmlns="events">StartUP FIU</host>');
+  const [event]=parseFeed(hosted,[],items);
+  assert.deepEqual(event.itemIds,['su']);assert.equal(event.category,1);assert.equal(event.creditVerified,true);assert.equal(event.host,'StartUP FIU');assert.match(event.sourceNote,/StartUP FIU Events/);
+  assert.equal(makeDraft([event],items,[],{email:'owner@example.com'},new Date('2026-10-23T20:00:00Z')).eventIds.length,1);
 });

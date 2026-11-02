@@ -57,7 +57,7 @@ The database check uses disposable user IDs and removes its rows. The auth smoke
 ### Data and refresh
 
 - `data/items.json` holds the 128 options (33 / 41 / 36 / 18 per category) with their original descriptions; `docs/sources/` keeps the capture. Import a new authorized capture with `node scripts/import-source.mjs <capture.json>`.
-- The refresh button and the daily 13:00 UTC Vercel Cron fetch `https://fiu.campuslabs.com/engage/events.rss`, update known event IDs and exact catalog-title matches, and keep the last verified snapshot on failure. A title match alone is not Honors credit until verified.
+- The refresh button and the daily 13:00 UTC Vercel Cron fetch `https://fiu.campuslabs.com/engage/events.rss`, update known event IDs, exact catalog-title matches, and events covered by an option's own rule (an "X Events" option matches events hosted by X; Honors series such as Honors Hours match by title), and keep the last verified snapshot on failure. Rule-matched events show which option they were matched to; a bare title match is not Honors credit until verified.
 - Official pathway deadline: April 9, 2027 at 23:59 (the source labels it EST). All wall-clock values use America/New_York, including DST validation.
 
 ### Privacy
@@ -83,7 +83,7 @@ Navy sidebar, warm paper surface, white cards, gold accents. Instrument Serif ca
 - 推荐只显示仍能计入未完成分类的活动，一场活动不重复计数。
 - 邮箱六位验证码登录，计划 / 已参加 / 学校已认可记录、备注、志愿服务小时云端同步。
 - 周视图；每周清单与截止前 5 天提醒的邮件预览，可下载 `.eml` 草稿，绝不自动发送。
-- 公开活动源每日刷新并显示最近成功时间；需登录的路径目录为带日期的快照。
+- 公开活动源每日刷新并显示最近成功时间：选项本身规定"某组织主办的活动"或"某系列活动"时，新公布的对应活动会自动归入该选项；需登录的路径目录为带日期的快照。
 
 **使用**：打开网站浏览活动 → 搜索与筛选 → 在"同步与设置"用邮箱验证码登录 → 用书签或"查看详情"记录计划与参与状态 → 在"我的进度"查看四类进度和志愿小时 → 在"邮件预览"审核提醒草稿。向学校的正式上报仍在 Panther Connect 与 GivePulse 完成；本工具不会登录 FIU 系统或保存 FIU 凭据。
 
